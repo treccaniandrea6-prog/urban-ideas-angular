@@ -1,0 +1,119 @@
+<div class="container">
+  <div class="top-bar">
+    <h2>User details</h2>
+
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button class="btn-logout" type="button" (click)="backToUsers()">
+        Back to users
+      </button>
+      <button class="btn-logout" type="button" (click)="refreshPosts()">
+        Refresh posts
+      </button>
+    </div>
+  </div>
+
+  <!-- USER -->
+  <p *ngIf="loading">Loading user...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div *ngIf="!loading && !error && user" class="card" style="margin-bottom: 18px;">
+    <div class="user-name">{{ user.name }}</div>
+    <div class="user-email">{{ user.email }}</div>
+
+    <div class="user-meta" style="margin-top: 12px;">
+      <span *ngIf="user.status">Status: {{ user.status }}</span>
+      <span *ngIf="user.gender">Gender: {{ user.gender }}</span>
+      <span *ngIf="user.id">ID: {{ user.id }}</span>
+    </div>
+  </div>
+
+  <!-- POSTS -->
+  <div class="top-bar" style="margin-top: 10px;">
+    <h2>User posts</h2>
+  </div>
+
+  <p *ngIf="postsLoading">Loading posts...</p>
+  <p *ngIf="postsError" class="error">{{ postsError }}</p>
+
+  <div *ngIf="!postsLoading && !postsError && posts.length === 0" class="small">
+    No posts found for this user.
+  </div>
+
+  <div *ngIf="!postsLoading && !postsError && posts.length > 0" class="posts-grid">
+    <div class="post-card" *ngFor="let p of posts">
+      <div class="post-title">{{ p.title }}</div>
+      <div class="post-body">{{ p.body }}</div>
+
+      <div class="post-actions">
+        <button class="btn-mini" type="button" (click)="toggleComments(p.id)">
+          {{ commentsOpen[p.id] ? 'Hide comments' : 'Show comments' }}
+        </button>
+      </div>
+
+      <!-- COMMENTS -->
+      <div *ngIf="commentsOpen[p.id]" class="comments-wrap">
+        <p *ngIf="commentsLoading[p.id]" class="small">Loading comments...</p>
+        <p *ngIf="commentsError[p.id]" class="error">{{ commentsError[p.id] }}</p>
+
+        <div *ngIf="!commentsLoading[p.id] && !commentsError[p.id]">
+          <div *ngIf="(commentsByPost[p.id]?.length ?? 0) === 0" class="small">
+            No comments for this post.
+          </div>
+
+          <div class="comment-card" *ngFor="let c of (commentsByPost[p.id] || [])">
+            <div class="comment-head">
+              <strong>{{ c.name }}</strong>
+              <span class="small">{{ c.email }}</span>
+            </div>
+            <div class="comment-body">{{ c.body }}</div>
+          </div>
+        </div>
+
+        <!-- ADD COMMENT -->
+        <div class="comment-form">
+          <div class="form-row">
+            <input
+              type="text"
+              placeholder="Name"
+              [(ngModel)]="commentForm[p.id].name"
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              [(ngModel)]="commentForm[p.id].email"
+            />
+          </div>
+
+          <textarea
+            rows="3"
+            placeholder="Write a comment..."
+            [(ngModel)]="commentForm[p.id].body"
+          ></textarea>
+
+          <div class="form-actions">
+            <button
+              class="btn-mini"
+              type="button"
+              (click)="sendComment(p.id)"
+              [disabled]="commentSending[p.id]"
+            >
+              {{ commentSending[p.id] ? 'Sending...' : 'Send comment' }}
+            </button>
+
+            <span *ngIf="commentSendOk[p.id]" class="small" style="color: #86efac;">
+              Comment sent
+            </span>
+          </div>
+
+          <p *ngIf="commentSendError[p.id]" class="error">
+            {{ commentSendError[p.id] }}
+          </p>
+        </div>
+      </div>
+
+      <div class="small" style="margin-top: 10px;">
+        Post ID: {{ p.id }}
+      </div>
+    </div>
+  </div>
+</div>

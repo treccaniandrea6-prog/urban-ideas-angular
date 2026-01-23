@@ -1,0 +1,156 @@
+<div class="container">
+  <div class="top-bar">
+    <h2>Posts</h2>
+
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button class="btn-logout" type="button" (click)="goUsers()">Users</button>
+      <button class="btn-logout" type="button" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- NEW POST -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h3 style="margin: 0 0 10px;">Create new post</h3>
+
+    <div class="form-row">
+      <input
+        type="number"
+        placeholder="User ID (required)"
+        [(ngModel)]="newPost.user_id"
+      />
+      <input
+        type="text"
+        placeholder="Title (required)"
+        [(ngModel)]="newPost.title"
+      />
+    </div>
+
+    <textarea
+      rows="4"
+      placeholder="Body (required)"
+      [(ngModel)]="newPost.body"
+    ></textarea>
+
+    <div class="form-actions">
+      <button class="btn-mini" type="button" (click)="createPost()" [disabled]="creatingPost">
+        {{ creatingPost ? 'Creating...' : 'Create post' }}
+      </button>
+
+      <span *ngIf="createPostOk" class="small" style="color:#86efac;">
+        Post created
+      </span>
+    </div>
+
+    <p *ngIf="createPostError" class="error">{{ createPostError }}</p>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h3 style="margin: 0 0 10px;">Search</h3>
+
+    <input
+      type="text"
+      placeholder="Search in title or body..."
+      [(ngModel)]="query"
+    />
+
+    <p class="small" style="margin-top: 10px;">
+      Showing {{ filteredPosts.length }} post(s) in this page.
+    </p>
+  </div>
+
+  <!-- LIST -->
+  <p *ngIf="loading">Loading...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div *ngIf="!loading && !error && filteredPosts.length === 0" class="small">
+    No posts found.
+  </div>
+
+  <div *ngIf="!loading && !error && filteredPosts.length > 0" class="posts-grid">
+    <div class="post-card" *ngFor="let p of filteredPosts">
+      <div class="post-title">{{ p.title }}</div>
+      <div class="post-body">{{ p.body }}</div>
+
+      <div class="small" style="margin-top: 10px;">
+        Post ID: {{ p.id }} · User ID: {{ p.user_id }}
+      </div>
+
+      <div class="post-actions">
+        <button class="btn-mini" type="button" (click)="toggleComments(p.id)">
+          {{ commentsOpen[p.id] ? 'Hide comments' : 'Show comments' }}
+        </button>
+      </div>
+
+      <div *ngIf="commentsOpen[p.id]" class="comments-wrap">
+        <p *ngIf="commentsLoading[p.id]" class="small">Loading comments...</p>
+        <p *ngIf="commentsError[p.id]" class="error">{{ commentsError[p.id] }}</p>
+
+        <div *ngIf="!commentsLoading[p.id] && !commentsError[p.id]">
+          <div *ngIf="(commentsByPost[p.id]?.length ?? 0) === 0" class="small">
+            No comments for this post.
+          </div>
+
+          <div class="comment-card" *ngFor="let c of (commentsByPost[p.id] || [])">
+            <div class="comment-head">
+              <strong>{{ c.name }}</strong>
+              <span class="small">{{ c.email }}</span>
+            </div>
+            <div class="comment-body">{{ c.body }}</div>
+          </div>
+        </div>
+
+        <div class="comment-form">
+          <div class="form-row">
+            <input
+              type="text"
+              placeholder="Name"
+              [(ngModel)]="commentForm[p.id].name"
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              [(ngModel)]="commentForm[p.id].email"
+            />
+          </div>
+
+          <textarea
+            rows="3"
+            placeholder="Write a comment..."
+            [(ngModel)]="commentForm[p.id].body"
+          ></textarea>
+
+          <div class="form-actions">
+            <button
+              class="btn-mini"
+              type="button"
+              (click)="sendComment(p.id)"
+              [disabled]="commentSending[p.id]"
+            >
+              {{ commentSending[p.id] ? 'Sending...' : 'Send comment' }}
+            </button>
+
+            <span *ngIf="commentSendOk[p.id]" class="small" style="color:#86efac;">
+              Comment sent
+            </span>
+          </div>
+
+          <p *ngIf="commentSendError[p.id]" class="error">{{ commentSendError[p.id] }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGER -->
+  <div class="pager" style="margin-top: 18px;">
+    <button class="btn" (click)="prevPage()" [disabled]="page === 1 || loading">
+      Previous
+    </button>
+
+    <div class="pageinfo">Page {{ page }}</div>
+
+    <button class="btn" (click)="nextPage()" [disabled]="loading">
+      Next
+    </button>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="card">
+    <h1>Token login</h1>
+    <p>Paste your GoREST API token to start your session.</p>
+
+    <label for="token">Token</label>
+    <input
+      id="token"
+      type="text"
+      placeholder="Enter token"
+      [(ngModel)]="token"
+    />
+
+    <button type="button" (click)="login()">Sign in</button>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <p class="small">
+      Token must be generated from the GoREST dashboard.
+    </p>
+  </div>
+</div>

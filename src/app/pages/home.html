@@ -1,0 +1,101 @@
+<div class="container">
+  <div class="top-bar">
+    <h2>Users</h2>
+
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button class="btn-logout" type="button" (click)="goPosts()">
+        Posts
+      </button>
+
+      <button class="btn-logout" type="button" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- CREATE USER -->
+  <div class="card" style="margin-bottom: 16px;">
+    <h3 style="margin: 0 0 10px;">Create new user</h3>
+
+    <div class="form-row">
+      <input type="text" placeholder="Full name" [(ngModel)]="newUser.name" />
+      <input type="email" placeholder="Email" [(ngModel)]="newUser.email" />
+    </div>
+
+    <div class="form-row" style="margin-top: 10px;">
+      <select [(ngModel)]="newUser.gender">
+        <option value="male">male</option>
+        <option value="female">female</option>
+      </select>
+
+      <select [(ngModel)]="newUser.status">
+        <option value="active">active</option>
+        <option value="inactive">inactive</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-mini" type="button" (click)="createUser()" [disabled]="creatingUser">
+        {{ creatingUser ? 'Creating...' : 'Create user' }}
+      </button>
+
+      <span *ngIf="createUserOk" class="small" style="color:#86efac;">
+        User created
+      </span>
+    </div>
+
+    <p *ngIf="createUserError" class="error">{{ createUserError }}</p>
+  </div>
+
+  <p *ngIf="loading">Loading...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div class="users-grid" *ngIf="!loading && !error && users.length > 0">
+    <div class="user-card" *ngFor="let u of users">
+      <div class="clickable" (click)="openUser(u.id)">
+        <div class="user-name">{{ u.name }}</div>
+        <div class="user-email">{{ u.email }}</div>
+
+        <div class="user-meta">
+          <span *ngIf="u.status">{{ u.status }}</span>
+          <span *ngIf="u.gender">{{ u.gender }}</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; display:flex; gap:10px; align-items:center;">
+        <button
+          class="btn-mini danger"
+          type="button"
+          (click)="deleteUser(u.id)"
+          [disabled]="deletingId === u.id"
+        >
+          {{ deletingId === u.id ? 'Deleting...' : 'Delete' }}
+        </button>
+
+        <span *ngIf="deleteOkId === u.id" class="small" style="color:#86efac;">
+          Deleted
+        </span>
+      </div>
+
+      <p *ngIf="deleteErrorId === u.id" class="error" style="margin-top:8px;">
+        {{ deleteErrorMsg }}
+      </p>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && !error && users.length === 0">
+    No users found.
+  </p>
+
+  <div class="pager">
+    <button class="btn" (click)="prevPage()" [disabled]="page === 1 || loading">
+      Previous
+    </button>
+
+    <div class="pageinfo">Page {{ page }}</div>
+
+    <button class="btn" (click)="nextPage()" [disabled]="loading">
+      Next
+    </button>
+  </div>
+</div>
