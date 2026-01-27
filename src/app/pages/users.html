@@ -1,0 +1,51 @@
+<div class="container">
+
+  <div class="top-bar">
+    <button>Users</button>
+    <button>Posts</button>
+    <button>Logout</button>
+  </div>
+
+  <div class="card">
+    <h3>Create new user</h3>
+
+    <input type="text" placeholder="Full name" />
+    <input type="email" placeholder="Email" />
+
+    <select>
+      <option>male</option>
+      <option>female</option>
+    </select>
+
+    <select>
+      <option>active</option>
+      <option>inactive</option>
+    </select>
+
+    <button>Create user</button>
+  </div>
+
+  <!-- LOADING -->
+  <p *ngIf="loading">Loading users...</p>
+
+  <!-- ERRORE -->
+  <p *ngIf="!loading && error" class="error">
+    {{ error }}
+  </p>
+
+  <!-- LISTA UTENTI -->
+  <div *ngIf="!loading && !error">
+    <div class="card" *ngFor="let u of users">
+      <strong>{{ u.name }}</strong><br />
+      {{ u.email }}
+    </div>
+  </div>
+
+  <!-- PAGINAZIONE -->
+  <div class="pager">
+    <button (click)="prevPage()">Previous</button>
+    <span>Page {{ page }}</span>
+    <button (click)="nextPage()">Next</button>
+  </div>
+
+</div>
