@@ -9,15 +9,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login').then(m => m.LoginComponent),
   },
 
-  
+  // ✅ TORNA COME PRIMA: HOME come contenitore (tabs, logout, ecc.)
   {
     path: 'users',
     canActivate: [authGuard],
-   
     loadComponent: () => import('./pages/home').then(m => m.HomeComponent),
   },
 
-  
   {
     path: 'users/:id',
     canActivate: [authGuard],
@@ -25,13 +23,14 @@ export const routes: Routes = [
       import('./pages/user-detail').then(m => m.UserDetailComponent),
   },
 
-  // ✅ Elenco post (lo implementiamo dopo)
   {
     path: 'posts',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/posts').then(m => m.PostsComponent),
   },
-{
+
+  // opzionale: se vuoi mantenerlo
+  {
     path: 'home',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/home').then(m => m.HomeComponent),

@@ -1,51 +1,47 @@
 <div class="container">
-
-  <div class="top-bar">
-    <button>Users</button>
-    <button>Posts</button>
-    <button>Logout</button>
-  </div>
-
   <div class="card">
-    <h3>Create new user</h3>
+    <h2>Users</h2>
 
-    <input type="text" placeholder="Full name" />
-    <input type="email" placeholder="Email" />
+    <!-- CREATE USER (UI) -->
+    <div class="card" style="margin-bottom: 16px;">
+      <h3>Create new user</h3>
 
-    <select>
-      <option>male</option>
-      <option>female</option>
-    </select>
+      <div style="display:flex; gap:12px; margin-bottom:10px;">
+        <input type="text" placeholder="Full name" [(ngModel)]="newName" style="flex:1;" />
+        <input type="email" placeholder="Email" [(ngModel)]="newEmail" style="flex:1;" />
+      </div>
 
-    <select>
-      <option>active</option>
-      <option>inactive</option>
-    </select>
+      <div style="display:flex; gap:12px; margin-bottom:10px;">
+        <select [(ngModel)]="newGender" style="flex:1;">
+          <option value="male">male</option>
+          <option value="female">female</option>
+        </select>
 
-    <button>Create user</button>
-  </div>
+        <select [(ngModel)]="newStatus" style="flex:1;">
+          <option value="active">active</option>
+          <option value="inactive">inactive</option>
+        </select>
+      </div>
 
-  <!-- LOADING -->
-  <p *ngIf="loading">Loading users...</p>
-
-  <!-- ERRORE -->
-  <p *ngIf="!loading && error" class="error">
-    {{ error }}
-  </p>
-
-  <!-- LISTA UTENTI -->
-  <div *ngIf="!loading && !error">
-    <div class="card" *ngFor="let u of users">
-      <strong>{{ u.name }}</strong><br />
-      {{ u.email }}
+      <button type="button">Create user</button>
     </div>
-  </div>
 
-  <!-- PAGINAZIONE -->
-  <div class="pager">
-    <button (click)="prevPage()">Previous</button>
-    <span>Page {{ page }}</span>
-    <button (click)="nextPage()">Next</button>
-  </div>
+    <!-- STATUS -->
+    <p *ngIf="loading">Loading users...</p>
+    <p *ngIf="!loading && error" class="error">{{ error }}</p>
 
-</div>
+    <!-- LIST -->
+    <div *ngIf="!loading && !error">
+      <p *ngIf="users.length === 0">Nessun utente trovato.</p>
+
+      <div class="users-grid" *ngIf="users.length > 0">
+        <div class="user-card" *ngFor="let u of users">
+          <div style="font-weight:600;">{{ u.name }}</div>
+          <div style="opacity:.85;">{{ u.email }}</div>
+          <div style="opacity:.85;">{{ u.gender }} • {{ u.status }}</div>
+
+          <div style="margin-top:10px;">
+            <button type="button">Delete</button>
+          </div>
+        </div>
+      </div>

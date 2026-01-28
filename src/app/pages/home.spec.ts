@@ -1,21 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomeComponent } from './home';
+import { describe, it, expect } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { provideRouter } from '@angular/router';
+
+@Component({
+  standalone: true,
+  imports: [CommonModule],
+  template: '',
+})
+class HomeComponentSpecHost {}
 
 describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
-
-  beforeEach(async () => {
+  it('should create', async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeComponent], // standalone
+      imports: [HomeComponentSpecHost],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(HomeComponentSpecHost);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

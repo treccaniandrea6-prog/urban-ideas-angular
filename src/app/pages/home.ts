@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -35,7 +35,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private usersService: UsersService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -53,12 +54,17 @@ export class HomeComponent implements OnInit {
       next: (data: any[]) => {
         this.users = data ?? [];
         this.loading = false;
+
+        // ✅ forza aggiornamento UI (fix "appare solo dopo click")
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.loading = false;
         const status = err?.status;
         if (status === 401) this.error = 'Unauthorized. Please sign in again.';
         else this.error = 'Error loading users.';
+
+        this.cdr.detectChanges();
       },
     });
   }
@@ -109,13 +115,19 @@ export class HomeComponent implements OnInit {
 
         this.newUser = { ...this.newUser, name: '', email: '' };
         this.loadUsers(this.page);
+
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.creatingUser = false;
         const statusCode = err?.status;
-        if (statusCode === 422) this.createUserError = 'Invalid data (email might already exist).';
-        else if (statusCode === 401) this.createUserError = 'Unauthorized. Please sign in again.';
+        if (statusCode === 422)
+          this.createUserError = 'Invalid data (email might already exist).';
+        else if (statusCode === 401)
+          this.createUserError = 'Unauthorized. Please sign in again.';
         else this.createUserError = 'Error creating user.';
+
+        this.cdr.detectChanges();
       },
     });
   }
@@ -134,14 +146,19 @@ export class HomeComponent implements OnInit {
         this.deletingId = null;
         this.deleteOkId = id;
         this.loadUsers(this.page);
+
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.deletingId = null;
         this.deleteErrorId = id;
 
         const statusCode = err?.status;
-        if (statusCode === 401) this.deleteErrorMsg = 'Unauthorized. Please sign in again.';
+        if (statusCode === 401)
+          this.deleteErrorMsg = 'Unauthorized. Please sign in again.';
         else this.deleteErrorMsg = 'Error deleting user.';
+
+        this.cdr.detectChanges();
       },
     });
   }

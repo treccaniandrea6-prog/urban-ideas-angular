@@ -100,24 +100,17 @@
           </div>
         </div>
 
-        <div class="comment-form">
+        <!-- ADD COMMENT (SAFE) -->
+        <div class="comment-form" *ngIf="commentForm[p.id] as form">
           <div class="form-row">
-            <input
-              type="text"
-              placeholder="Name"
-              [(ngModel)]="commentForm[p.id].name"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              [(ngModel)]="commentForm[p.id].email"
-            />
+            <input type="text" placeholder="Name" [(ngModel)]="form.name" />
+            <input type="email" placeholder="Email" [(ngModel)]="form.email" />
           </div>
 
           <textarea
             rows="3"
             placeholder="Write a comment..."
-            [(ngModel)]="commentForm[p.id].body"
+            [(ngModel)]="form.body"
           ></textarea>
 
           <div class="form-actions">

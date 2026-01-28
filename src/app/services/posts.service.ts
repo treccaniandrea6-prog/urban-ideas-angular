@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
-  private API_URL = 'https://gorest.co.in/public/v2';
+  private readonly API_URL = 'https://gorest.co.in/public/v2';
 
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token') || '';
+    const token = (sessionStorage.getItem('token') || '').trim();
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
@@ -21,9 +21,17 @@ export class PostsService {
   getPostsByUser(userId: number): Observable<any[]> {
     const headers = this.getAuthHeaders();
     const id = Number(userId);
+    return this.http.get<any[]>(`${this.API_URL}/users/${id}/posts`, { headers });
+  }
+
+  // 🔹 Tutti i post (paginati)
+  getAllPosts(page: number = 1, perPage: number = 10): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    const safePage = Math.max(1, Number(page) || 1);
+    const safePerPage = Math.min(50, Math.max(1, Number(perPage) || 10));
 
     return this.http.get<any[]>(
-      `${this.API_URL}/users/${id}/posts`,
+      `${this.API_URL}/posts?page=${safePage}&per_page=${safePerPage}`,
       { headers }
     );
   }
@@ -32,11 +40,7 @@ export class PostsService {
   getCommentsByPost(postId: number): Observable<any[]> {
     const headers = this.getAuthHeaders();
     const id = Number(postId);
-
-    return this.http.get<any[]>(
-      `${this.API_URL}/posts/${id}/comments`,
-      { headers }
-    );
+    return this.http.get<any[]>(`${this.API_URL}/posts/${id}/comments`, { headers });
   }
 
   // 🔹 Crea un commento
@@ -47,29 +51,12 @@ export class PostsService {
     const headers = this.getAuthHeaders();
     const id = Number(postId);
 
-    return this.http.post<any>(
-      `${this.API_URL}/posts/${id}/comments`,
-      payload,
-      { headers }
-    );
+    return this.http.post<any>(`${this.API_URL}/posts/${id}/comments`, payload, { headers });
   }
-  getAllPosts(page: number = 1, perPage: number = 10): Observable<any[]> {
-  const headers = this.getAuthHeaders();
-  const safePage = Math.max(1, Number(page) || 1);
-  const safePerPage = Math.min(50, Math.max(1, Number(perPage) || 10));
 
-  return this.http.get<any[]>(
-    `${this.API_URL}/posts?page=${safePage}&per_page=${safePerPage}`,
-    { headers }
-  );
-}
-createPost(payload: { user_id: number; title: string; body: string }): Observable<any> {
-  const headers = this.getAuthHeaders();
-
-  return this.http.post<any>(
-    `${this.API_URL}/posts`,
-    payload,
-    { headers }
-  );
-}
+  // 🔹 Crea un post (richiede token)
+  createPost(payload: { user_id: number; title: string; body: string }): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(`${this.API_URL}/posts`, payload, { headers });
+  }
 }

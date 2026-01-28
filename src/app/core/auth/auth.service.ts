@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
 
-const TOKEN_KEY = 'gorest_token';
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly KEY = 'token';
+
   setToken(token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.setItem(this.KEY, token.trim());
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+  getToken(): string {
+    return sessionStorage.getItem(this.KEY) ?? '';
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.getToken().length > 0;
   }
 
   logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(this.KEY);
   }
 }

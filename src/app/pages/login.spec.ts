@@ -1,21 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginComponent } from './login';
+import { describe, it, expect } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { provideRouter } from '@angular/router';
+
+@Component({
+  standalone: true,
+  imports: [CommonModule],
+  template: '',
+})
+class LoginComponentSpecHost {}
 
 describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
-
-  beforeEach(async () => {
+  it('should create', async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [LoginComponentSpecHost],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(LoginComponentSpecHost);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

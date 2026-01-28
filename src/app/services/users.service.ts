@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -11,11 +11,10 @@ export type CreateUserPayload = {
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-  private API_USERS = 'https://gorest.co.in/public/v2/users';
+  private http = inject(HttpClient);
+  private API_URL = 'https://gorest.co.in/public/v2';
 
-  constructor(private http: HttpClient) {}
-
-  private getHeaders(): HttpHeaders {
+  private getAuthHeaders(): HttpHeaders {
     const token = sessionStorage.getItem('token') || '';
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -24,36 +23,33 @@ export class UsersService {
     });
   }
 
-  getUsers(page: number = 1): Observable<any[]> {
-    const headers = this.getHeaders();
+  getUsers(page: number): Observable<any[]> {
+    const headers = this.getAuthHeaders();
     const safePage = Math.max(1, Number(page) || 1);
 
-    return this.http.get<any[]>(
-      `${this.API_USERS}?page=${safePage}&per_page=10`,
-      { headers }
-    );
-  }
-
-  getUserById(userId: number): Observable<any> {
-    const headers = this.getHeaders();
-    const id = Math.max(1, Number(userId) || 1);
-    return this.http.get<any>(`${this.API_USERS}/${id}`, { headers });
-  }
-
-  getUserPosts(userId: number): Observable<any[]> {
-    const headers = this.getHeaders();
-    const id = Math.max(1, Number(userId) || 1);
-    return this.http.get<any[]>(`${this.API_USERS}/${id}/posts`, { headers });
+    return this.http.get<any[]>(`${this.API_URL}/users?page=${safePage}`, { headers });
   }
 
   createUser(payload: CreateUserPayload): Observable<any> {
-    const headers = this.getHeaders();
-    return this.http.post<any>(this.API_USERS, payload, { headers });
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(`${this.API_URL}/users`, payload, { headers });
   }
 
-  deleteUser(userId: number): Observable<void> {
-    const headers = this.getHeaders();
-    const id = Math.max(1, Number(userId) || 1);
-    return this.http.delete<void>(`${this.API_USERS}/${id}`, { headers });
+  deleteUser(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const id = Number(userId);
+    return this.http.delete<any>(`${this.API_URL}/users/${id}`, { headers });
+  }
+
+  getUserById(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const id = Number(userId);
+    return this.http.get<any>(`${this.API_URL}/users/${id}`, { headers });
+  }
+
+  getUserPosts(userId: number): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    const id = Number(userId);
+    return this.http.get<any[]>(`${this.API_URL}/users/${id}/posts`, { headers });
   }
 }
