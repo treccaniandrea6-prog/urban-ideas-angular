@@ -1,59 +1,132 @@
-# UrbanIdeas
+Urban Ideas – Angular Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+Urban Ideas is an application developed using Angular that allows the management of users and posts through the public GoREST REST APIs.
+This project was created as the final application of the Angular Course, with the goal of practicing authentication, routing, HTTP services, state handling, and testing.
 
-## Development server
+⸻
 
-To start a local development server, run:
+Technologies Used
+• Angular 21 (standalone components)
+• Angular Router
+• Angular Forms
+• Angular HttpClient
+• RxJS
+• Vitest for unit testing
+• GoREST Public API (https://gorest.co.in/)
+• Git & GitHub
 
-```bash
-ng serve
-```
+No external UI frameworks such as Bootstrap, PrimeNG, or Angular Material were used.
+The main focus of the project is functionality and application architecture.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+⸻
 
-## Code scaffolding
+Authentication
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The application uses Bearer Token authentication.
 
-```bash
-ng generate component component-name
-```
+To access the application: 1. Generate a personal token from the official GoREST page
+https://gorest.co.in/consumer/login 2. Enter the token in the application login screen 3. The token is stored in sessionStorage and used:
+• to protect routes via an Auth Guard
+• to authorize all HTTP requests to the APIs
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+All application features are protected by authentication.
 
-```bash
-ng generate --help
-```
+⸻
 
-## Building
+Main Features
 
-To build the project run:
+Login
+• Access via GoREST token
+• Route protection using Auth Guard
+• Automatic redirect when the token is missing or invalid
 
-```bash
-ng build
-```
+⸻
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Users List
+• Display of users list
+• Pagination
+• Selection of users per page (5 / 10 / 20 / 50)
+• Search users by name or email
+• Create a new user
+• Delete an existing user
+• Access to the user detail page
 
-## Running unit tests
+⸻
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+User Detail Page
+• Display of all user information
+• List of posts associated with the selected user
+• Display of comments for each post
+• Ability to add new comments to posts
 
-```bash
-ng test
-```
+⸻
 
-## Running end-to-end tests
+Posts List
+• Display of all posts in the system
+• Search posts
+• View post comments
+• Create new posts
+• Add new comments to posts
 
-For end-to-end (e2e) testing, run:
+⸻
 
-```bash
-ng e2e
-```
+Logout
+• Removal of the token from the session
+• Automatic redirect to the login page
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+⸻
 
-## Additional Resources
+Architecture
+• Application built using standalone components
+• Clear separation between:
+• Components
+• Services
+• Guards
+• Centralized routing with protected routes
+• HTTP communication handled through dedicated services
+• Lazy loading of components using loadComponent
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+⸻
+
+Testing
+
+Unit tests have been implemented for:
+• Services
+• Authentication Guard
+• Main components
+
+Test coverage exceeds 60%, as required by the project guidelines.
+
+To run tests:
+npm test
+
+⸻
+
+Running the Project Locally 1. Clone the repository:
+git clone https://github.com/treccaniandrea6-prog/urban-ideas-angular.git 2. Enter the project folder:
+cd urban-ideas-angular 3. Install dependencies:
+npm install 4. Start the development server:
+npm start
+
+The application will be available at:
+http://localhost:4200
+
+⸻
+
+Final Notes
+
+The project was developed following Angular best practices, with particular attention to:
+• code clarity
+• separation of responsibilities
+• correct usage of services
+• authentication management
+• testing
+
+The UI design was not the primary focus, but the interface is clean, simple, and functional.
+
+⸻
+
+GitHub Repository
+
+Public repository:
+https://github.com/treccaniandrea6-prog/urban-ideas-angular
